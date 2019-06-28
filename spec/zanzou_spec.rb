@@ -97,6 +97,52 @@ describe "Zanzou#with_updates" do
       expect(orig).to eq([1,2,[3,4]])
       expect(new_obj).to eq([2,[3,99]])
     end
+
+    it "#slice" do
+      pending "TODO: we should track the index of the sliced objects"
+      orig = [1, 2, [3]]
+      new_obj = Zanzou.with_updates(orig){|o|
+        o.slice(1..2)[1] = 99
+      }
+
+      expect(orig).to eq([1,2,[3]])
+      expect(new_obj).to eq([1, 2, [99]])
+    end
+
+    it "#sample" do
+      pending "Can we fix this by comparing object_id?"
+      orig = ["a", "b"]
+      new_obj = Zanzou.with_updates(orig){|o|
+        o.sample.upcase!
+      }
+
+      expect(orig).to eq(["a", "b"])
+      expect([["A", "b"], ["a", "B"]]).to include(new_obj)
+    end
+
+    it "#shuffle" do
+      pending "How about this...? :thinking:"
+      orig = ["a", "b"]
+      new_obj = Zanzou.with_updates(orig){|o|
+        o.shuffle.first.upcase!
+      }
+
+      expect(orig).to eq(["a", "b"])
+      expect([["A", "b"], ["a", "B"]]).to include(new_obj)
+    end
+
+    it "reversed" do
+      pending "I thought this would fail but it doesn't"
+      require 'zanzou/array'
+      orig = [1, 2, [3]]
+      reversed = nil
+      new_obj = Zanzou.with_updates(orig){|o|
+        o[2][0] = 99
+        reversed = o.reverse
+      }
+
+      expect(reversed).to eq([[99], 2, 1])
+    end
   end
 
   context "Hash" do
