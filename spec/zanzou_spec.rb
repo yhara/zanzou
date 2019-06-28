@@ -131,18 +131,17 @@ describe "Zanzou#with_updates" do
       expect([["A", "b"], ["a", "B"]]).to include(new_obj)
     end
 
-    it "reversed" do
-      pending "I thought this would fail but it doesn't"
-      require 'zanzou/array'
-      orig = [1, 2, [3]]
-      reversed = nil
-      new_obj = Zanzou.with_updates(orig){|o|
-        o[2][0] = 99
-        reversed = o.reverse
-      }
-
-      expect(reversed).to eq([[99], 2, 1])
-    end
+    # I thought this would fail but it doesn't
+    #it "reversed" do
+    #  require 'zanzou/array'
+    #  orig = [1, 2, [3]]
+    #  reversed = nil
+    #  new_obj = Zanzou.with_updates(orig){|o|
+    #    o[2][0] = 99
+    #    reversed = o.reverse
+    #  }
+    #  expect(reversed).to eq([[99], 2, 1])
+    #end
   end
 
   context "Hash" do
