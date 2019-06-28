@@ -17,7 +17,7 @@ module Zanzou
       NON_DESTRUCTIVE_OBJECT_METHODS
 
     def method_missing(name, *args)
-      if NON_DESTRUCTIVE_METHODS.include?(name)
+      if NON_DESTRUCTIVE_ARRAY_METHODS.include?(name)
         handle_non_destructive_method_call(name, args)
       else
         super
