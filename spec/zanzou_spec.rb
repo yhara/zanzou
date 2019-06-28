@@ -86,6 +86,17 @@ describe "Zanzou#with_updates" do
       expect(orig).to eq([1,[2,3],4])
       expect(new_obj).to eq([1,[2,99],4])
     end
+
+    it "should apply modification of children before index changes" do
+      orig = [1, 2, [3, 4]]
+      new_obj = Zanzou.with_updates(orig){|o|
+        o[2][1] = 99
+        o.shift
+      }
+
+      expect(orig).to eq([1,2,[3,4]])
+      expect(new_obj).to eq([2,[3,99]])
+    end
   end
 
   context "Hash" do

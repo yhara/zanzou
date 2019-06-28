@@ -149,10 +149,9 @@ module Zanzou
 
     private
 
-    def handle_setter(idx, value)
+    def handle_setter(key, value)
       modified!
-      @new_obj = @orig_obj.dup
-      @new_obj[idx] = value
+      @modifications[key] = value
       return value
     end
 
@@ -160,13 +159,27 @@ module Zanzou
       if @new_obj
         return @new_obj[idx]
       else
-        return ShadowNode.create(@orig_obj[idx], parent: self, parent_key: idx)
+        if @children.key?(idx)
+          return @children[key]
+        else
+          child_shadow = ShadowNode.create(@orig_obj[idx], parent: self, parent_key: idx)
+          @children[idx] = child_shadow
+          return child_shadow
+        end
       end
     end
 
     def handle_destructive_method_call(name, args)
       modified!
       @new_obj = @orig_obj.dup
+
+      # Apply modification to children now because the index may change by the public_send 
+      @children.each do |idx, child_shadow|
+        @new_obj[idx] = ShadowNode.finalize(child_shadow)
+      end
+      # Forget about the children we've finalized
+      @modifications.clear
+
       return @new_obj.public_send(name, *args)
     end
   end
