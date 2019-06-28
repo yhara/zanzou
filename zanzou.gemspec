@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Yutaka HARA"]
   spec.email         = ["yutaka.hara+github@gmail.com"]
 
-  spec.summary       = %q{Helps updading immutable objects}
+  spec.summary       = %q{Provides DSL for "modifying immutable objects"}
   spec.homepage      = "https://github.com/yhara/zanzou"
   spec.license       = "MIT"
 
@@ -24,8 +24,4 @@ Gem::Specification.new do |spec|
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
-
-  spec.add_development_dependency "bundler", "~> 2.0"
-  spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "rspec"
 end
