@@ -1,6 +1,6 @@
 # Zanzou
 
-Something like Ruby port of immer.js
+Something like Ruby port of [immer.js](https://github.com/immerjs/immer)
 
 ## Installation
 
@@ -19,6 +19,9 @@ Or install it yourself as:
     $ gem install zanzou
 
 ## Usage
+
+With `Zanzou.with_updates`, you can create a modified copy of `orig_obj` with
+imperative style.
 
 ```rb
 require 'zanzou'
@@ -42,9 +45,7 @@ p orig_obj
 
 Zanzou should work well with these objects.
 
-- Hash, String, numbers, true, false, nil
-
-Array is also supported but has some problems left (see below).
+- Array, Hash, String, numbers, true, false, nil
 
 Normally other objects, say a Range, should be OK too. However, container
 classes (i.e. objects which contains other objects in it) need special
@@ -58,24 +59,9 @@ See spec/zanzou_spec.rb for an example.
 
 ## Known issues
 
-Supporting Array is harder than I thought. Some methods of Array like `shift`,
-`sort!`, etc. changes indices of existing values and thus affects the
-parent-child relationship.
+Some methods of Array/Hash may does not work well. See the pending specs (`git grep pending`).
 
-Example:
-
-```rb
-orig = [1, 2, [3]]
-new_obj = Zanzou.with_updates(orig){|o|
-  o.last[0] = 99   # Zanzou could memorize the child array is modified, but
-  o.sort!          # its index is moved to somewhere
-}
-```
-
-Maybe we could support this by tracking changes of indices (For example, `shift` changes all the indices by -1). For the case of `sort!` we could not expect how
-the indices change, but maybe we can know the new position by comparing `object_id`. Otherwise we should just raise an error for these cases.
-
-immer.js does not have such problems because ES6 Proxy is very powerful - it
+FYI immer.js does not have such problems because ES6 Proxy is very powerful - it
 reports object set/get even for methods like Array sort.
 
 ```js
@@ -98,9 +84,9 @@ pxy.sort();
 //   ...
 //   { hook: 'get', prop: '4' }
 //   { hook: 'get', prop: '5' }
-//   { hook: 'set', prop: '0', value: 1987 }
-//   { hook: 'set', prop: '1', value: 2348 }
-//   { hook: 'set', prop: '2', value: 2387 }
+//   { hook: 'set', prop: '0', value: 1987 }  // It reports all the set/get operations
+//   { hook: 'set', prop: '1', value: 2348 }  // sort() does and thus immer.js can
+//   { hook: 'set', prop: '2', value: 2387 }  // track movements of child elements.
 //   { hook: 'set', prop: '3', value: 2987 }
 //   { hook: 'set', prop: '4', value: 5613 }
 //   { hook: 'set', prop: '5', value: 7823 }
